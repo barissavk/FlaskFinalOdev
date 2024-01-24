@@ -78,9 +78,16 @@ class AboutFooter(db.Model):
     call = db.Column(db.String(255), nullable=True)
     email = db.Column(db.String(255), nullable=True)
     footer = db.Column(db.String(255), nullable=True)
+    google_maps = db.Column(db.String, nullable=True)
     facebook = db.Column(db.String(255), nullable=True)
     twitter = db.Column(db.String(255), nullable=True)
     linkedin = db.Column(db.String(255), nullable=True)
     instagram = db.Column(db.String(255), nullable=True)
     contactheader = db.Column(db.String(255), nullable=True)
     contacttext = db.Column(db.String(255), nullable=True)
+    
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.String(500), nullable=False)

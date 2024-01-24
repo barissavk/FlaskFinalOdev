@@ -152,8 +152,8 @@ class BannerModelView(MyModelView):
                 model.image_url = form.image_url.object_data.filename
                 
 class AboutFooterModelView(MyModelView):
-    column_list = ('about', 'about_text', 'adress', 'call', 'email', 'footer', 'facebook', 'twitter', 'linkedin', 'instagram', 'contactheader', 'contacttext')  # Gösterilecek sütunlar
-    form_columns = ('about','about_text', 'about_image', 'adress', 'call', 'email', 'footer', 'facebook', 'twitter', 'linkedin', 'instagram', 'contactheader', 'contacttext')  # Düzenlenebilir sütunlar
+    column_list = ('about', 'about_text', 'adress', 'call', 'email', 'footer', 'facebook', 'twitter', 'linkedin', 'instagram', 'contactheader', 'contacttext', 'google_maps')  # Gösterilecek sütunlar
+    form_columns = ('about','about_text', 'about_image', 'adress', 'call', 'email', 'footer', 'facebook', 'twitter', 'linkedin', 'instagram', 'contactheader', 'contacttext', 'google_maps')  # Düzenlenebilir sütunlar
     column_searchable_list = ('about','about_text', 'adress', 'call', 'email', 'footer', 'facebook', 'twitter', 'linkedin', 'instagram', 'contactheader', 'contacttext')  # Aranabilir sütunlar
     
     form_args = {
@@ -193,6 +193,9 @@ class AboutFooterModelView(MyModelView):
     'contacttext': {
         'validators': [validators.DataRequired()]
     },
+    'google_maps':{
+        'validators': [validators.DataRequired()]
+    }
 }
 
     

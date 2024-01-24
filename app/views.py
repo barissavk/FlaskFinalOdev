@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, flash
 from app import app, db
 from flask_login import current_user, login_required
-from app.models import Product, Comments, AboutFooter, Cart,CartItem
+from app.models import Product, Comments, AboutFooter, Cart,CartItem,Contact
 from app.forms import ContactForm, NewsletterForm
 
 @app.route('/')
@@ -17,23 +17,29 @@ def about():
     about = AboutFooter.query.all()
     return render_template('about.html', about=about)
 
-@app.route('/contact',methods=["GET", "POST"])
+@app.route('/contact', methods=["GET", "POST"])
 def contact():
     about = AboutFooter.query.all()
-    contact = ContactForm()
-    newsletter = NewsletterForm()
+    contact_form = ContactForm()  # Form nesnesini doğru şekilde oluşturun
 
-    if contact.validate_on_submit(): 
-        print(f"Name: {contact.name.data}, Email: {contact.email.data}, Message: {contact.message.data}")
-    else: 
-        print("Invalid Credentials") 
-        
-    if newsletter.validate_on_submit(): 
-        print(f"Email: {newsletter.email.data}")
-    else: 
-        print("Invalid Credentials") 
-        
-    return render_template('contact.html', about=about, contact=contact, newsletter=newsletter)
+    if contact_form.validate_on_submit():
+        # Form verilerini al
+        name = contact_form.name.data
+        email = contact_form.email.data
+        message = contact_form.message.data
+
+        # Veritabanına yeni bir ileti ekle
+        new_contact = Contact(name=name, email=email, message=message)
+        db.session.add(new_contact)
+        db.session.commit()
+
+        flash('Message sent successfully!', 'success')  # İsteğe bağlı: Flash mesaj ekleme
+
+        return redirect(url_for('contact'))
+
+    # Diğer kodlar burada...
+
+    return render_template('contact.html', about=about, contact=contact_form, newsletter=NewsletterForm())
 
 @app.route('/client')
 def client():

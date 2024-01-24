@@ -54,7 +54,7 @@
                      <ul>
                         <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='images/user-icon.png') }}"> {{current_user.username}} (LOGOUT)</a></li>
                         <li><a href="{{ url_for('cart') }}"><img src="{{ url_for('static', filename='images/bag-icon.png') }}"></a></li>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
+                        <li><a href="{{ url_for('products') }}"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
                      </ul>
                   </div>
                </form>
@@ -63,7 +63,7 @@
                   <div class="login_text">
                      <ul>
                         <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename='images/user-icon.png') }}"></a></li>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
+                        <li><a href="{{ url_for('products') }}"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
                      </ul>
                   </div>
                </form>
