@@ -295,6 +295,7 @@ button {
 }
 
 .login_text {
+
     width: 100%;
     float: left;
 }
@@ -306,18 +307,18 @@ button {
 
 .login_text li {
     font-size: 18px;
-    color: #ffffff;
+    color: #000000;
     text-transform: uppercase;
     float: left;
     padding-left: 15px;
 }
 
 .login_text a {
-    color: #ffffff;
+    color: #000000;
 }
 
 .login_text a:hover {
-    color: #ffffff;
+    color: #858585;
 }
 
 .navbar-light .navbar-brand {
@@ -382,6 +383,22 @@ button {
     background-color: #f5ddb6;
 }
 
+.read_bt button {
+    width: 100%;
+    float: left;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #252525;
+    text-align: center;
+    padding: 10px 0px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.read_bt button:hover {
+    color: #ffffff;
+    background-color: #f5ddb6;
+}
 
 /* banner section end */
 
@@ -489,6 +506,27 @@ button {
 .buy_bt li.active a {
     background-color: #f5ddb6;
     color: #fff;
+}
+
+.cartbutton{
+    font-size: 15px;
+    color: #000000;
+    padding: 5px 10px;
+    background-color: #f5ddb6;
+    text-transform: uppercase;
+    margin-right: 5px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Durağan görünümde geçiş efekti ekledik */
+}
+
+.cartbutton button:hover {
+    background-color: #f1b452;
+}
+
+.cartbutton button.active {
+    background-color: #f1b452;
 }
 
 .price_text {
@@ -936,4 +974,141 @@ button {
 
 .margin_top90 {
     margin-top: 90px;
+}
+
+/* Login ekranı */
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #7d7d7c;
+    padding: 20px;
+    margin-top: 50px; /* Adjust the top margin as needed */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact{
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.contact-container {
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+    margin-right: 75px;
+    background-color: #ffffff;
+    border: 1px solid #7d7d7c;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: 30px auto 30px;
+    max-width: 1100px;
+    background-color: #ffffff;
+    border: 1px solid #7d7d7c;
+    padding: 25px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-container {
+    display: inline-block;
+    width: 100%;
+    max-width: 900px;
+    margin-top: 10px;
+    background-color: #ffffff;
+    border: 1px solid #7d7d7c;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #252525;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #252525;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-group-button{
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #252525;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-group-button:hover{
+    background-color: #f5ddb6;
+}
+
+.form-group button:hover {
+    background-color: #f5ddb6;
+}
+
+.form-group a {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #252525;
+    text-decoration: none;
+}
+
+/* Register ekranı */
+
+.register-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #7d7d7c;
+    padding: 20px;
+    margin-top: 50px; /* Adjust the top margin as needed */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-container h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
 }

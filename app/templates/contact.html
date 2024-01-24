@@ -48,15 +48,26 @@
                </div>
                <span class="toggle_icon" onclick="openNav()"><img src="{{ url_for('static', filename='images/toggle-icon.png') }}"></span>
                <a class="logo" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a></a>
+               {% if current_user.is_authenticated%}
                <form class="form-inline ">
                   <div class="login_text">
                      <ul>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/user-icon.png') }}"></a></li>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/bag-icon.png') }}"></a></li>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
+                        <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='images/user-icon.png') }}"> {{current_user.username}} (LOGOUT)</a></li>
+                        <li><a href="{{ url_for('cart') }}"><img src="{{ url_for('static', filename='images/bag-icon.png') }}"></a></li>
+                        <li><a href="{{ url_for('products') }}"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
                      </ul>
                   </div>
                </form>
+               {% else %}
+               <form class="form-inline ">
+                  <div class="login_text">
+                     <ul>
+                        <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename='images/user-icon.png') }}"></a></li>
+                        <li><a href="{{ url_for('products') }}"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
+                     </ul>
+                  </div>
+               </form>
+               {%endif%}
             </nav>
          </div>
       </div>
@@ -66,17 +77,68 @@
          <div class="container">
             <div class="row">
                <div class="col-md-6">
-                  <h1 class="contact_taital">Get In Touch</h1>
-                  <p class="contact_text">Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation  eu </p>
+                  <h1 class="contact_taital">{{about[0].contactheader}}</h1>
+                  <p class="contact_text">{{about[0].contacttext}}</p>
                </div>
                <div class="col-md-6">
                   <div class="contact_main">
-                     <div class="contact_bt"><a href="#">Contact Form</a></div>
-                     <div class="newletter_bt"><a href="#">Newletter</a></div>
+                     <div class="contact_bt"><a href="#forms">Contact Form</a></div>
+                     <div class="newletter_bt"><a href="#forms">Newletter</a></div>
                   </div>
                </div>
             </div>
          </div>
+
+         <div id="forms" class="contact">
+            <div class="contact-container">
+               <h2>CONTACT US</h2>
+               <div class="form-group">
+                  {{contact.name.label(class="form-label") }} 
+                  {{contact.name(class="form-control") }} 
+                  {% if contact.name.errors %}
+                    <div class="invalid-feedback">
+                      {{ contact.name.errors[0] }}
+                    </div>
+                  {% endif %}
+                </div>
+          
+                <div class="form-group">
+                  {{ contact.email.label(class="form-label") }} 
+                  {{contact.email(class="form-control") }} 
+                  {% if contact.email.errors %}
+                    <div class="invalid-feedback">
+                      {{ contact.email.errors[0] }}
+                    </div>
+                  {% endif %}
+                </div>
+          
+                <div class="form-group">
+                  {{ contact.message.label(class="form-label") }} 
+                  {{contact.message(class="form-control") }} 
+                  {% if contact.message.errors %}
+                    <div class="invalid-feedback">
+                      {{ contact.message.errors[0] }}
+                    </div>
+                  {% endif %}
+                </div>
+          
+                <div class="form-group">{{ contact.submit(class="form-group-button") }}</div>
+            </div>
+               <div class="contact-container">
+                  <h2>NEWSLETTER</h2>
+                  <div class="form-group">
+                     {{ newsletter.email.label(class="form-label") }} 
+                     {{newsletter.email(class="form-control") }} 
+                     {% if newsletter.email.errors %}
+                     <div class="invalid-feedback">
+                        {{ newsletter.email.errors[0] }}
+                     </div>
+                     {% endif %}
+                  </div>
+                  <div class="form-group">{{ newsletter.subscribe(class="form-group-button") }}</div>
+               </div>
+         </div>
+
          <div class="map_main">
             <div class="map-responsive">
                <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&amp;q=Eiffel+Tower+Paris+France" width="600" height="400" frameborder="0" style="border:0; width: 100%;" allowfullscreen=""></iframe>
@@ -84,6 +146,7 @@
          </div>
       </div>
       <!-- contact section end -->
+
       <!-- footer section start -->
       <div class="footer_section layout_padding">
          <div class="container">
@@ -96,17 +159,17 @@
                         <ul>
                            <li>
                               <a href="#">
-                              <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left10">Address : Loram Ipusm</span>
+                              <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left10">Address : {{about[0].adress}}</span>
                               </a>
                            </li>
                            <li>
                               <a href="#">
-                              <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left10">Call : +01 1234567890</span>
+                              <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left10">Call : {{about[0].call}}</span>
                               </a>
                            </li>
                            <li>
                               <a href="#">
-                              <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left10">Email : demo@gmail.com</span>
+                              <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left10">Email : {{about[0].email}}</span>
                               </a>
                            </li>
                         </ul>
@@ -114,29 +177,23 @@
                   </div>
                   <div class="col-sm-4">
                      <div class="footer_logo_1"><a href="index.html"><img src="{{ url_for('static', filename='images/footer-logo.png') }}"></a></div>
-                     <p class="dummy_text">commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-                  </div>
-                  <div class="col-sm-4">
-                     <div class="main">
-                        <h3 class="address_text">Best Products</h3>
-                        <p class="ipsum_text">dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-                     </div>
+                     <p class="dummy_text">{{about[0].footer}}</p>
                   </div>
                </div>
             </div>
             <div class="social_icon">
                <ul>
                   <li>
-                     <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                     <a href="{{about[0].facebook}}"><i class="fa fa-facebook" aria-hidden="true"></i></a>
                   </li>
                   <li>
-                     <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                     <a href="{{about[0].twitter}}"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                   </li>
                   <li>
-                     <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                     <a href="{{about[0].linkedin}}"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
                   </li>
                   <li>
-                     <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                     <a href="{{about[0].instagram}}"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                   </li>
                </ul>
             </div>

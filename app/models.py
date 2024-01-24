@@ -21,14 +21,20 @@ class User(UserMixin, db.Model):
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    username = db.Column(db.String(64), db.ForeignKey('user.username'), nullable=False)
     items = db.relationship('CartItem', backref='cart', lazy=True)
-
 
 class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cart_id = db.Column(db.Integer, db.ForeignKey('cart.id'), nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     quantity = db.Column(db.Integer, default=1, nullable=False)
+    
+    # product ilişkisi, CartItem'dan Product'e yönlendirme yapacak
+    product = db.relationship('Product', backref='cart_items', lazy=True)
+
+    def __repr__(self):
+        return f'<CartItem {self.product}>'
 
 
 class Product(db.Model):
@@ -45,6 +51,7 @@ class Product(db.Model):
     size = db.Column(db.String(50))  # Ürün boyutu
     weight = db.Column(db.Float)  # Ürün ağırlığı
     is_active = db.Column(db.Boolean, default=True)  # Ürünün aktif/pasif durumu
+    is_show = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return f'<Product {self.name}>'
@@ -56,7 +63,24 @@ class Category(db.Model):
     def __repr__(self):
         return f'<Category {self.name}>'
 
-
-
-
-# forms.py
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    client_name = db.Column(db.String(100), nullable=False)
+    client_comment = db.Column(db.String(500), nullable=False)
+    client_image = db.Column(db.String(255), nullable=True) 
+    
+class AboutFooter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    about = db.Column(db.String(100), nullable=False)
+    about_text = db.Column(db.String(255), nullable=True)
+    about_image = db.Column(db.String(255), nullable=True)
+    adress = db.Column(db.String(255), nullable=True)
+    call = db.Column(db.String(255), nullable=True)
+    email = db.Column(db.String(255), nullable=True)
+    footer = db.Column(db.String(255), nullable=True)
+    facebook = db.Column(db.String(255), nullable=True)
+    twitter = db.Column(db.String(255), nullable=True)
+    linkedin = db.Column(db.String(255), nullable=True)
+    instagram = db.Column(db.String(255), nullable=True)
+    contactheader = db.Column(db.String(255), nullable=True)
+    contacttext = db.Column(db.String(255), nullable=True)

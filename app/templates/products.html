@@ -48,15 +48,26 @@
                </div>
                <span class="toggle_icon" onclick="openNav()"><img src="{{ url_for('static', filename='images/toggle-icon.png') }}"></span>
                <a class="logo" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}"></a></a>
+               {% if current_user.is_authenticated%}
                <form class="form-inline ">
                   <div class="login_text">
                      <ul>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/user-icon.png') }}"></a></li>
-                        <li><a href="#"><img src="{{ url_for('static', filename='images/bag-icon.png') }}"></a></li>
+                        <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='images/user-icon.png') }}"> {{current_user.username}} (LOGOUT)</a></li>
+                        <li><a href="{{ url_for('cart') }}"><img src="{{ url_for('static', filename='images/bag-icon.png') }}"></a></li>
                         <li><a href="#"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
                      </ul>
                   </div>
                </form>
+               {% else %}
+               <form class="form-inline ">
+                  <div class="login_text">
+                     <ul>
+                        <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename='images/user-icon.png') }}"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/search-icon.png') }}"></a></li>
+                     </ul>
+                  </div>
+               </form>
+               {%endif%}
             </nav>
          </div>
       </div>
@@ -67,7 +78,14 @@
             <div class="row">
                <div class="col-sm-12">
                   <h1 class="product_taital">Our Products</h1>
-                  <p class="product_text">incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+                  <p class="product_text">{{product_len}} products are listed below.</p>
+
+                  <div style="float:right;" class="search_section">
+                     <form action="{{ url_for('search') }}" method="GET" class="search_form">
+                         <input type="text" name="query" placeholder="Search products">
+                         <button class="cartbutton" type="submit">Search</button>
+                     </form>
+                 </div>
                </div>
             </div>
             <div class="product_section_2 layout_padding">
@@ -77,22 +95,23 @@
                         <div class="product_box">
                            <h4 class="bursh_text">{{ product.name }}</h4>
                            <p class="lorem_text">{{ product.description }}</p>
-                           <img src="{{ url_for('static', filename='images/img-1.png') }}" class="image_1">
+                           <img src="{{ url_for('static', filename='') }}{{ product.image_url }}" class="image_1">
 
                            <div class="btn_main">
                               <div class="buy_bt">
-                                 <ul>
-                                    <li class="active"><a href="#">Buy Now</a></li>
-                                 </ul>
+                                 <form method="POST" action="{{ url_for('purchase_product', id=product.id) }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <!-- Diğer form alanları... -->
+                                    <button type="submit" class="cartbutton">Add to Cart</button>
+                                </form>
                               </div>
-                              <h3 class="price_text">Price: {{product.price}}</h3>
+                              <h3 class="price_text">Price: ${{product.price}}</h3>
                            </div>
                         </div>
                      </div>
                   {% endfor %}
                </div>
             </div>
-            <div class="seemore_bt"><a href="#">See More</a></div>
             </div>
          </div>
       </div>
@@ -109,17 +128,17 @@
                         <ul>
                            <li>
                               <a href="#">
-                              <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left10">Address : Loram Ipusm</span>
+                              <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left10">Address : {{about[0].adress}}</span>
                               </a>
                            </li>
                            <li>
                               <a href="#">
-                              <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left10">Call : +01 1234567890</span>
+                              <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left10">Call : {{about[0].call}}</span>
                               </a>
                            </li>
                            <li>
                               <a href="#">
-                              <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left10">Email : demo@gmail.com</span>
+                              <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left10">Email : {{about[0].email}}</span>
                               </a>
                            </li>
                         </ul>
@@ -127,29 +146,23 @@
                   </div>
                   <div class="col-sm-4">
                      <div class="footer_logo_1"><a href="index.html"><img src="{{ url_for('static', filename='images/footer-logo.png') }}"></a></div>
-                     <p class="dummy_text">commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-                  </div>
-                  <div class="col-sm-4">
-                     <div class="main">
-                        <h3 class="address_text">Best Products</h3>
-                        <p class="ipsum_text">dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-                     </div>
+                     <p class="dummy_text">{{about[0].footer}}</p>
                   </div>
                </div>
             </div>
             <div class="social_icon">
                <ul>
                   <li>
-                     <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                     <a href="{{about[0].facebook}}"><i class="fa fa-facebook" aria-hidden="true"></i></a>
                   </li>
                   <li>
-                     <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                     <a href="{{about[0].twitter}}"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                   </li>
                   <li>
-                     <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                     <a href="{{about[0].linkedin}}"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
                   </li>
                   <li>
-                     <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                     <a href="{{about[0].instagram}}"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                   </li>
                </ul>
             </div>
