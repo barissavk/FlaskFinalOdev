@@ -1,8 +1,9 @@
 from flask import render_template, redirect, url_for, request, flash
 from app import app, db
 from flask_login import current_user, login_required
-from app.models import Product, Comments, AboutFooter, Cart,CartItem,Contact
+from app.models import Product, Comments, AboutFooter, Cart, CartItem, Contact, Newsletter, Order, OrderItem
 from app.forms import ContactForm, NewsletterForm
+from datetime import datetime
 
 @app.route('/')
 def index():
@@ -21,6 +22,7 @@ def about():
 def contact():
     about = AboutFooter.query.all()
     contact_form = ContactForm()  # Form nesnesini doğru şekilde oluşturun
+    newsletter_form = NewsletterForm()
 
     if contact_form.validate_on_submit():
         # Form verilerini al
@@ -33,13 +35,22 @@ def contact():
         db.session.add(new_contact)
         db.session.commit()
 
-        flash('Message sent successfully!', 'success')  # İsteğe bağlı: Flash mesaj ekleme
-
+        return redirect(url_for('contact'))
+    
+    if newsletter_form.validate_on_submit():
+        
+        email = newsletter_form.email.data
+        
+        new_subscriber = Newsletter(email=email)
+        
+        db.session.add(new_subscriber)
+        db.session.commit()
+        
         return redirect(url_for('contact'))
 
     # Diğer kodlar burada...
 
-    return render_template('contact.html', about=about, contact=contact_form, newsletter=NewsletterForm())
+    return render_template('contact.html', about=about, contact=contact_form, newsletter=newsletter_form)
 
 @app.route('/client')
 def client():
@@ -89,7 +100,7 @@ def purchase_product(id):
         db.session.add(new_cart_item)
 
     db.session.commit()
-
+    
     return redirect(url_for('cart'))  # sepete götür
 
 @app.route("/remove_from_cart/<int:id>", methods=['POST'])
@@ -122,7 +133,24 @@ def cart():
     # Kullanıcının sepet içeriğini al
     cart_items = CartItem.query.filter_by(cart_id=user_id).all()
 
-    return render_template('cart.html', cart_items=cart_items,about=about)
+    # Sepet toplamını hesaplamak için başlangıç değeri
+    cart_total = 0
+    
+    for cart in cart_items:
+        product_price = cart.product.price
+        quantity = cart.quantity
+        
+        item_total = product_price * quantity
+        
+        cart_total += item_total
+        
+    # Sepet toplamını cent cinsinden al
+    cart_total_cents = int(cart_total * 100)
+
+    # Dolar ve cent olarak böl
+    dollars = cart_total_cents // 100
+    cents = cart_total_cents % 100
+    return render_template('cart.html', cart_items=cart_items,about=about,dollars=dollars,cents=cents)
 
 @app.route('/search')
 def search():
@@ -134,3 +162,77 @@ def search():
     product_len = len(products)
     # Daha sonra bu sonuçları şablonunuza geçirerek render_template kullanabilirsiniz
     return render_template('products_search.html', query=query, products=products,about=about,product_len=product_len)
+
+@app.route("/order", methods=['POST'])
+@login_required
+def place_order():
+    # Kullanıcı girişi kontrolü yapılıyor
+    user_id = current_user.get_id()
+
+    # Kullanıcının sepet içeriğini al
+    cart_items = CartItem.query.filter_by(cart_id=user_id).all()
+
+    cart_total = 0
+
+    # Sepetteki her ürün için sipariş öğesi oluştur
+    for cart_item in cart_items:
+        product_price = cart_item.product.price
+        quantity = cart_item.quantity
+        item_total = product_price * quantity
+        cart_total += item_total
+
+    # Yeni bir sipariş oluştur
+    new_order = Order(user_id=user_id, cart_total=int(cart_total * 100), order_date=datetime.utcnow())
+    db.session.add(new_order)
+    db.session.commit()
+
+    # Sepetteki her ürün için sipariş öğesi oluştur
+    for cart_item in cart_items:
+        product_id = cart_item.product.id
+        quantity = cart_item.quantity
+
+        new_order_item = OrderItem(order_id=new_order.id, product_id=product_id, quantity=quantity)
+        db.session.add(new_order_item)
+
+    # Sepeti temizle
+    CartItem.query.filter_by(cart_id=user_id).delete()
+    db.session.commit()
+
+    return redirect(url_for('cart'))
+
+"""@app.route("/order", methods=['POST'])
+@login_required
+def place_order():
+    
+    cart_total = 0
+    # Kullanıcı girişi kontrolü yapılıyor
+    user_id = current_user.get_id()
+
+    # Kullanıcının sepet içeriğini al
+    cart_items = CartItem.query.filter_by(cart_id=user_id).all()
+
+    # Yeni bir sipariş oluştur
+    new_order = Order(user_id=user_id, cart_total_cents=cart_total, order_date=datetime.utcnow())
+    db.session.add(new_order)
+    db.session.commit()
+
+    # Sepetteki her ürün için sipariş öğesi oluştur
+    for cart_item in cart_items:
+        product_id = cart_item.product.id
+        quantity = cart_item.quantity
+
+        new_order_item = OrderItem(order_id=new_order.id, cart_total_cents=cart_total_cents, product_id=product_id, quantity=quantity)
+        db.session.add(new_order_item)
+        
+    for cart in cart_items:
+        product_price = cart.product.price
+        quantity = cart.quantity 
+        item_total = product_price * quantity    
+        cart_total += item_total
+        cart_total_cents = int(cart_total * 100)
+
+    # Sepeti temizle
+    CartItem.query.filter_by(cart_id=user_id).delete()
+    db.session.commit()
+
+    return redirect(url_for('cart'))"""

@@ -218,11 +218,44 @@ class AboutFooterModelView(MyModelView):
             if isinstance(form.about_image.object_data, FileStorage):
                 model.about_image = form.about_image.object_data.filename
                 
-class CartItemModelView(ModelView):
+class CartItemModelView(MyModelView):
     # CartItem modeli için bir görünüm (view) oluşturuyoruz
     # Bu sınıfı özelleştirerek admin panelinde nasıl görüneceğini belirleyebiliriz
     column_list = ('id', 'user_id','username', 'cart.items')  # Gösterilecek sütunlar
     column_searchable_list = ('user_id')  # Aranabilir sütunlar
+
+    def init_search(self):
+        return False
+    
+class ContactFormModelView(MyModelView):
+    column_list = ('id','name','email', 'message')
+    column_searchable_list = ('email')
+    
+    def init_search(self):
+        return False
+    
+class NewsletterFormModelView(MyModelView):
+    column_list = ('id','email')
+    def init_search(self):
+        return False
+    
+class OrderItemModelView(MyModelView):
+    # OrderItem modeli için bir görünüm (view) oluşturuyoruz
+    # Bu sınıfı özelleştirerek admin panelinde nasıl görüneceğini belirleyebiliriz
+    column_list = ('id', 'order_id', 'product.name', 'quantity')  # Gösterilecek sütunlar
+
+class OrderModelView(MyModelView):
+    # Order modeli için bir görünüm (view) oluşturuyoruz
+    # Bu sınıfı özelleştirerek admin panelinde nasıl görüneceğini belirleyebiliriz
+    column_list = ('id', 'user_id', 'cart_total')  # Gösterilecek sütunlar
+    column_searchable_list = ('user_id')  # Aranabilir sütunlar
+
+    # İlişkili OrderItem'ları göstermek için ilişki sütunu ekleyin
+    column_details_list = ('items', 'items.product.name', 'items.quantity')
+
+    column_formatters = {
+        'cart_total': lambda view, context, model, name: "${:,.2f}".format(model.cart_total / 100) if model.cart_total is not None else None 
+    }
 
     def init_search(self):
         return False

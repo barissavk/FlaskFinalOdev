@@ -1,6 +1,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from flask_login import UserMixin
+from datetime import datetime
+from sqlalchemy import func
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -91,3 +93,29 @@ class Contact(db.Model):
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     message = db.Column(db.String(500), nullable=False)
+    
+class Newsletter(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), nullable=False)
+    
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    cart_total = db.Column(db.Integer, nullable=False)
+    order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # İlişkiler
+    user = db.relationship('User', backref=db.backref('orders', lazy=True))
+    
+class OrderItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
+    # İlişkiler
+    order = db.relationship('Order', backref=db.backref('items', lazy=True))
+    product = db.relationship('Product', backref=db.backref('order_items', lazy=True))
+    
+    def __repr__(self):
+        return 'Product {} - Price: {}'.format(self.product, self.product.price)

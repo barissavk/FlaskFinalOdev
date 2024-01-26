@@ -24,8 +24,8 @@ from app.my_admin.routes import MyAdminIndexView
 admin = Admin(app, name='Admin' , template_mode='bootstrap3')
 # index_view=MyAdminIndexView()
 # Model ve View İçe Aktarmaları
-from app.models import Product, Category, User, Comments, AboutFooter,CartItem,Cart
-from app.my_admin import ProductModelView, CategoryModelView, UserModelView, CommentsModelView, AboutFooterModelView,CartItemModelView
+from app.models import Product, Category, User, Comments, AboutFooter, CartItem, Cart, Contact, Newsletter, Order, OrderItem
+from app.my_admin import ProductModelView, CategoryModelView, UserModelView, CommentsModelView, AboutFooterModelView, CartItemModelView, ContactFormModelView, NewsletterFormModelView, OrderItemModelView, OrderModelView
 from app.auth import auth as auth_blueprint
 
 # Admin Paneli
@@ -35,6 +35,10 @@ admin.add_view(CategoryModelView(Category, db.session))
 admin.add_view(CommentsModelView(Comments, db.session))
 admin.add_view(AboutFooterModelView(AboutFooter, db.session))
 admin.add_view(CartItemModelView(Cart, db.session))
+admin.add_view(ContactFormModelView(Contact, db.session))
+admin.add_view(NewsletterFormModelView(Newsletter, db.session))
+admin.add_view(OrderModelView(Order, db.session))
+admin.add_view(OrderItemModelView(OrderItem, db.session))
 
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 from app import views, models

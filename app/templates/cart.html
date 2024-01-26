@@ -73,7 +73,7 @@
       </div>
       <!-- header section end -->
         <div class="cart">
-            <h2>Your Cart</h2>
+            <h2>Your Cart (Total: ${{dollars}}.{{cents}})</h2>
             {% for cart_item in cart_items %}
                     <li class="cart-container">
                         <div class="cart_product">
@@ -90,6 +90,14 @@
                     </li>
             {% endfor %}
         </div>
+
+        <div class="cart">
+         <form method="POST" action="{{ url_for('place_order') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- Diğer form alanları... -->
+            <button type="submit" class="cartbutton">ORDER</button>
+        </form>
+     </div>
       <!-- footer section start -->
       <div class="footer_section layout_padding">
          <div class="container">
@@ -119,7 +127,7 @@
                      </div>
                   </div>
                   <div class="col-sm-4">
-                     <div class="footer_logo_1"><a href="index.html"><img src="{{ url_for('static', filename='images/footer-logo.png') }}"></a></div>
+                     <div class="footer_logo_1"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/footer-logo.png') }}"></a></div>
                      <p class="dummy_text">{{about[0].footer}}</p>
                   </div>
                </div>
