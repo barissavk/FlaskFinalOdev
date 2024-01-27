@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request, flash
 from app import app, db
 from flask_login import current_user, login_required
 from app.models import Product, Comments, AboutFooter, Cart, CartItem, Contact, Newsletter, Order, OrderItem
-from app.forms import ContactForm, NewsletterForm
+from app.forms import ContactForm, NewsletterForm, ChangePasswordForm
 from datetime import datetime
 
 @app.route('/')
@@ -200,39 +200,17 @@ def place_order():
 
     return redirect(url_for('cart'))
 
-"""@app.route("/order", methods=['POST'])
+@app.route('/change_password', methods=['GET', 'POST'])
 @login_required
-def place_order():
-    
-    cart_total = 0
-    # Kullanıcı girişi kontrolü yapılıyor
-    user_id = current_user.get_id()
+def change_password():
+    form = ChangePasswordForm()
 
-    # Kullanıcının sepet içeriğini al
-    cart_items = CartItem.query.filter_by(cart_id=user_id).all()
+    if form.validate_on_submit():
+        # Kullanıcının eski şifresini kontrol et
+        if current_user.check_password(form.old_password.data):
+            # Yeni şifreyi ayarla
+            current_user.set_password(form.new_password.data)
+            db.session.commit()
+            return redirect(url_for('index'))
 
-    # Yeni bir sipariş oluştur
-    new_order = Order(user_id=user_id, cart_total_cents=cart_total, order_date=datetime.utcnow())
-    db.session.add(new_order)
-    db.session.commit()
-
-    # Sepetteki her ürün için sipariş öğesi oluştur
-    for cart_item in cart_items:
-        product_id = cart_item.product.id
-        quantity = cart_item.quantity
-
-        new_order_item = OrderItem(order_id=new_order.id, cart_total_cents=cart_total_cents, product_id=product_id, quantity=quantity)
-        db.session.add(new_order_item)
-        
-    for cart in cart_items:
-        product_price = cart.product.price
-        quantity = cart.quantity 
-        item_total = product_price * quantity    
-        cart_total += item_total
-        cart_total_cents = int(cart_total * 100)
-
-    # Sepeti temizle
-    CartItem.query.filter_by(cart_id=user_id).delete()
-    db.session.commit()
-
-    return redirect(url_for('cart'))"""
+    return render_template('change_password.html', form=form)
